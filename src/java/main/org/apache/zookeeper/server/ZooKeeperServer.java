@@ -408,7 +408,7 @@ public class ZooKeeperServer implements SessionExpirer, ServerStats.Provider {
         }
     }
     
-    public synchronized void startup() {
+    public synchronized void startup() { //线程安全方法,只能有一个线程进入
         if (sessionTracker == null) {
             createSessionTracker();
         }
@@ -418,7 +418,7 @@ public class ZooKeeperServer implements SessionExpirer, ServerStats.Provider {
         registerJMX();
 
         setState(State.RUNNING);
-        notifyAll();
+        notifyAll(); //唤醒其他线程
     }
 
     protected void setupRequestProcessors() {
@@ -502,7 +502,7 @@ public class ZooKeeperServer implements SessionExpirer, ServerStats.Provider {
         LOG.info("shutting down");
 
         // new RuntimeException("Calling shutdown").printStackTrace();
-        setState(State.SHUTDOWN);
+        setState(State.SHUTDOWN); //设置状态为shutdow，回调方法会根据状态进行执行
         // Since sessionTracker and syncThreads poll we just have to
         // set running to false and they will detect it during the poll
         // interval.

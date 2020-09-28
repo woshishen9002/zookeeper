@@ -23,6 +23,7 @@ public class ZookeeperTest {
         String s = zooKeeper.create(path, "aa".getBytes(), null, CreateMode.PERSISTENT);
         System.out.println("-----s:"+s);
 
+        //阻塞，防止上面的程序主线程执行完成后退出，导致监听客户端也结束进程
         System.in.read();
     }
 

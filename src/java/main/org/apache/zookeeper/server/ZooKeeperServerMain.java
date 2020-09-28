@@ -74,7 +74,7 @@ public class ZooKeeperServerMain {
         throws ConfigException, IOException
     {
         try {
-            ManagedUtil.registerLog4jMBeans();
+            ManagedUtil.registerLog4jMBeans(); //注册mbeans
         } catch (JMException e) {
             LOG.warn("Unable to register log4j JMX control", e);
         }
@@ -107,23 +107,23 @@ public class ZooKeeperServerMain {
             // server error or shutdown state changes.
             final CountDownLatch shutdownLatch = new CountDownLatch(1);
             zkServer.registerServerShutdownHandler(
-                    new ZooKeeperServerShutdownHandler(shutdownLatch));
+                    new ZooKeeperServerShutdownHandler(shutdownLatch)); //注册失败回调，结束阻塞
 
             txnLog = new FileTxnSnapLog(new File(config.dataLogDir), new File(
                     config.dataDir));
             txnLog.setServerStats(zkServer.serverStats());
-            zkServer.setTxnLogFactory(txnLog);
+            zkServer.setTxnLogFactory(txnLog);  //给zkServer设置参数
             zkServer.setTickTime(config.tickTime);
             zkServer.setMinSessionTimeout(config.minSessionTimeout);
             zkServer.setMaxSessionTimeout(config.maxSessionTimeout);
-            cnxnFactory = ServerCnxnFactory.createFactory();
+            cnxnFactory = ServerCnxnFactory.createFactory(); //设置ServerCnxn具体实现类
             cnxnFactory.configure(config.getClientPortAddress(),
                     config.getMaxClientCnxns());
             cnxnFactory.startup(zkServer);
             // Watch status of ZooKeeper server. It will do a graceful shutdown
             // if the server is not running or hits an internal error.
-            shutdownLatch.await();
-            shutdown();
+            shutdownLatch.await(); //阻塞，状态变化后，结束阻塞
+            shutdown(); //结束cnxnFactory
 
             cnxnFactory.join();
             if (zkServer.canShutdown()) {

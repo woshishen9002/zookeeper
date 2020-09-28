@@ -776,7 +776,7 @@ public class ZooKeeper {
 
         final String serverPath = prependChroot(clientPath);
 
-        RequestHeader h = new RequestHeader();
+        RequestHeader h = new RequestHeader();//客户端创建请求头
         h.setType(ZooDefs.OpCode.create);
         CreateRequest request = new CreateRequest();
         CreateResponse response = new CreateResponse();
@@ -787,6 +787,7 @@ public class ZooKeeper {
             throw new KeeperException.InvalidACLException();
         }
         request.setAcl(acl);
+        //TODO wh.核心类ClientCnxn,执行请求
         ReplyHeader r = cnxn.submitRequest(h, request, response, null);
         if (r.getErr() != 0) {
             throw KeeperException.create(KeeperException.Code.get(r.getErr()),

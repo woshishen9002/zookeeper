@@ -329,7 +329,7 @@ public class ZooKeeperMain {
                 String line;
                 Method readLine = consoleC.getMethod("readLine", String.class);
                 while ((line = (String)readLine.invoke(console, getPrompt())) != null) {
-                    executeLine(line);
+                    executeLine(line); //执行命令
                 }
             } catch (ClassNotFoundException e) {
                 LOG.debug("Unable to start jline", e);
@@ -367,9 +367,9 @@ public class ZooKeeperMain {
     public void executeLine(String line)
     throws InterruptedException, IOException, KeeperException {
       if (!line.equals("")) {
-        cl.parseCommand(line);
-        addToHistory(commandCount,line);
-        processCmd(cl);
+        cl.parseCommand(line); //解析用户命令
+        addToHistory(commandCount,line);//命令添加到map
+        processCmd(cl); //
         commandCount++;
       }
     }
@@ -639,7 +639,7 @@ public class ZooKeeperMain {
             return false;
         }
         
-        boolean watch = args.length > 2;
+        boolean watch = args.length > 2; //判断用户参数
         String path = null;
         List<ACL> acl = Ids.OPEN_ACL_UNSAFE;
         LOG.debug("Processing " + cmd);
@@ -686,9 +686,9 @@ public class ZooKeeperMain {
             return false;
         }
         
-        if (cmd.equals("create") && args.length >= 3) {
+        if (cmd.equals("create") && args.length >= 3) { //用户输入创建节点命令
             int first = 0;
-            CreateMode flags = CreateMode.PERSISTENT;
+            CreateMode flags = CreateMode.PERSISTENT; //默认创建持久节点
             if ((args[1].equals("-e") && args[2].equals("-s"))
                     || (args[1]).equals("-s") && (args[2].equals("-e"))) {
                 first+=2;
@@ -705,7 +705,7 @@ public class ZooKeeperMain {
             }
             path = args[first + 1];
             String newPath = zk.create(path, args[first+2].getBytes(), acl,
-                    flags);
+                    flags); //调用zookeeper对象，与服务端交互，创建节点
             System.err.println("Created " + newPath);
         } else if (cmd.equals("delete") && args.length >= 2) {
             path = args[1];

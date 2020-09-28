@@ -131,12 +131,12 @@ public class QuorumPeerConfig {
      * @throws ConfigException error processing configuration
      */
     public void parse(String path) throws ConfigException {
-        File configFile = new File(path);
+        File configFile = new File(path); //读取配置文件zoo.cfg
 
         LOG.info("Reading configuration from: " + configFile);
 
         try {
-            if (!configFile.exists()) {
+            if (!configFile.exists()) { //配置文件不存在抛出异常
                 throw new IllegalArgumentException(configFile.toString()
                         + " file is missing");
             }
@@ -144,12 +144,12 @@ public class QuorumPeerConfig {
             Properties cfg = new Properties();
             FileInputStream in = new FileInputStream(configFile);
             try {
-                cfg.load(in);
+                cfg.load(in); //将流中的文件加载到Properties中
             } finally {
                 in.close();
             }
 
-            parseProperties(cfg);
+            parseProperties(cfg); //真正的解析
         } catch (IOException e) {
             throw new ConfigException("Error processing " + path, e);
         } catch (IllegalArgumentException e) {
@@ -167,10 +167,10 @@ public class QuorumPeerConfig {
     throws IOException, ConfigException {
         int clientPort = 0;
         String clientPortAddress = null;
-        for (Entry<Object, Object> entry : zkProp.entrySet()) {
+        for (Entry<Object, Object> entry : zkProp.entrySet()) { //遍历配置
             String key = entry.getKey().toString().trim();
             String value = entry.getValue().toString().trim();
-            if (key.equals("dataDir")) {
+            if (key.equals("dataDir")) { //判断key，给全局变量赋值
                 dataDir = value;
             } else if (key.equals("dataLogDir")) {
                 dataLogDir = value;
@@ -403,7 +403,7 @@ public class QuorumPeerConfig {
             // figured out
             servers.putAll(observers);
 
-            File myIdFile = new File(dataDir, "myid");
+            File myIdFile = new File(dataDir, "myid"); //读取myid文件
             if (!myIdFile.exists()) {
                 throw new IllegalArgumentException(myIdFile.toString()
                         + " file is missing");

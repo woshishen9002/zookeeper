@@ -102,16 +102,16 @@ public class QuorumPeerMain {
     {
         QuorumPeerConfig config = new QuorumPeerConfig();
         if (args.length == 1) {
-            config.parse(args[0]);
+            config.parse(args[0]); //读取配置文件，设置全局变量
         }
 
         // Start and schedule the the purge task
         DatadirCleanupManager purgeMgr = new DatadirCleanupManager(config
                 .getDataDir(), config.getDataLogDir(), config
                 .getSnapRetainCount(), config.getPurgeInterval());
-        purgeMgr.start();
+        purgeMgr.start(); //启动定时清理日志等文件的定时任务，需要配置purgeInterval (>0)
 
-        if (args.length == 1 && config.servers.size() > 0) {
+        if (args.length == 1 && config.servers.size() > 0) { //如果配置文件中有server配置
             runFromConfig(config);
         } else {
             LOG.warn("Either no config or no quorum defined in config, running "

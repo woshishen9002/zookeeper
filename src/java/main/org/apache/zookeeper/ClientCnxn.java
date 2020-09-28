@@ -399,7 +399,7 @@ public class ClientCnxn {
         connectTimeout = sessionTimeout / hostProvider.size();
         readTimeout = sessionTimeout * 2 / 3;
         readOnly = canBeReadOnly;
-
+        //TODO wh.客户端核心线程
         sendThread = new SendThread(clientCnxnSocket);
         eventThread = new EventThread();
 
@@ -1041,7 +1041,7 @@ public class ClientCnxn {
             long lastPingRwServer = Time.currentElapsedTime();
             final int MAX_SEND_PING_INTERVAL = 10000; //10 seconds
             InetSocketAddress serverAddress = null;
-            while (state.isAlive()) {
+            while (state.isAlive()) { //循环调用
                 try {
                     if (!clientCnxnSocket.isConnected()) {
                         if(!isFirstConnect){
@@ -1186,6 +1186,7 @@ public class ClientCnxn {
             cleanup();
             clientCnxnSocket.close();
             if (state.isAlive()) {
+                //注册一个监听事件的线程到队列
                 eventThread.queueEvent(new WatchedEvent(Event.EventType.None,
                         Event.KeeperState.Disconnected, null));
             }
